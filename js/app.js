@@ -89,6 +89,93 @@ class BudgetExpenseTracker {
         localStorage.setItem(key, JSON.stringify(data));
     }
 
+    // Export/Import Methods
+    exportData() {
+        const data = {
+            expenses: this.expenses,
+            income: this.income,
+            budgets: this.budgets,
+            customCategories: this.customCategories,
+            exportDate: new Date().toISOString(),
+            version: '1.0'
+        };
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `expense-tracker-backup-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        alert('✅ Data exported successfully! Check your downloads folder.');
+    }
+    
+    importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    // Validate data structure
+                    if (!data.expenses || !data.income || !data.budgets) {
+                        throw new Error('Invalid backup file format');
+                    }
+                    
+                    // Ask for confirmation
+                    const confirmMsg = `Import data from ${data.exportDate ? new Date(data.exportDate).toLocaleDateString() : 'backup'}?\n\n` +
+                                     `This will replace your current data:\n` +
+                                     `- ${data.expenses.length} expenses\n` +
+                                     `- ${data.income.length} income entries\n` +
+                                     `- ${data.budgets.length} budgets\n\n` +
+                                     `Your current data will be overwritten!`;
+                    
+                    if (!confirm(confirmMsg)) return;
+                    
+                    // Import data
+                    this.expenses = data.expenses || [];
+                    this.income = data.income || [];
+                    this.budgets = data.budgets || [];
+                    this.customCategories = data.customCategories || [];
+                    
+                    // Save to localStorage
+                    this.saveToStorage('expenses', this.expenses);
+                    this.saveToStorage('income', this.income);
+                    this.saveToStorage('budgets', this.budgets);
+                    this.saveToStorage('customCategories', this.customCategories);
+                    
+                    // Refresh UI
+                    this.updateDashboard();
+                    this.displayExpenses();
+                    this.displayIncome();
+                    this.displayBudgets();
+                    this.populateCategoryDropdowns();
+                    
+                    alert('✅ Data imported successfully!');
+                } catch (error) {
+                    alert('❌ Error importing data: ' + error.message);
+                    console.error('Import error:', error);
+                }
+            };
+            
+            reader.readAsText(file);
+        };
+        
+        input.click();
+    }
+
     // Event Listeners
     setupEventListeners() {
         // Tab switching
