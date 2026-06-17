@@ -576,6 +576,12 @@ header h1 {
     border-radius: 0px;
     padding: 20px;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    min-height: 60px;
+}
+
+/* Hide empty breakdown lists */
+.breakdown-list:empty {
+    display: none;
 }
 
 .breakdown-item {
@@ -622,9 +628,10 @@ header h1 {
 /* Empty State */
 .empty-state {
     text-align: center;
-    padding: 40px;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 1.1rem;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    font-style: italic;
 }
 
 /* Responsive */
