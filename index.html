@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget & Expense Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Nik's Expense Tracker</h1>
+            <p class="subtitle">Track your income, expenses, and stay within budget</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="tab-btn" data-tab="expenses">💸 Expenses</button>
+            <button class="tab-btn" data-tab="income">💵 Income</button>
+            <button class="tab-btn" data-tab="budget">🎯 Budget</button>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="summary-cards">
+                <div class="card income-card">
+                    <h3>Total Income</h3>
+                    <p class="amount" id="totalIncome">$0.00</p>
+                    <span class="label">All time</span>
+                </div>
+                <div class="card expense-card">
+                    <h3>Total Expenses</h3>
+                    <p class="amount" id="totalExpenses">$0.00</p>
+                    <span class="label">All time</span>
+                </div>
+                <div class="card balance-card">
+                    <h3>Net Balance</h3>
+                    <p class="amount" id="netBalance">$0.00</p>
+                    <span class="label">Income - Expenses</span>
+                </div>
+            </div>
+
+            <!-- Budget Status Overview -->
+            <div class="section">
+                <h2>Budget Status</h2>
+                <div id="budgetStatusContainer" class="budget-status-grid">
+                    <p class="empty-state">No budgets set. Go to Budget tab to create one.</p>
+                </div>
+            </div>
+
+            <!-- Spending Breakdown Chart -->
+            <div class="section">
+                <h2>Spending Breakdown by Category</h2>
+                <div class="chart-container">
+                    <canvas id="categoryPieChart"></canvas>
+                </div>
+                <div id="categoryBreakdownList" class="breakdown-list"></div>
+            </div>
+
+            <!-- Payment Method Breakdown -->
+            <div class="section">
+                <h2>Spending by Payment Method</h2>
+                <div id="paymentMethodBreakdown" class="breakdown-list"></div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="section">
+                <h2>Recent Transactions</h2>
+                <div id="recentTransactions" class="transaction-list"></div>
+            </div>
+        </div>
+
+        <!-- Expenses Tab -->
+        <div id="expenses" class="tab-content">
+            <div class="section">
+                <h2>Add New Expense</h2>
+                <form id="expenseForm" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expenseDate">Date</label>
+                            <input type="date" id="expenseDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseAmount">Amount ($)</label>
+                            <input type="number" id="expenseAmount" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseDescription">Description</label>
+                        <input type="text" id="expenseDescription" placeholder="e.g., Grocery shopping" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expenseCategory">Category</label>
+                            <select id="expenseCategory" required>
+                                <option value="Food">Food</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Groceries">Groceries</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Bills">Bills</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Education">Education</option>
+                                <option value="Miscellaneous">Miscellaneous</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="expensePaymentMethod">Payment Method</label>
+                            <select id="expensePaymentMethod" required>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Digital Wallet">Digital Wallet</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Expense</button>
+                </form>
+            </div>
+
+            <!-- Quick Add Buttons -->
+            <div class="section">
+                <h2>Quick Add</h2>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="tracker.quickAddBusFare()" class="btn btn-secondary" style="display: flex; align-items: center; gap: 8px;">
+                        🚌 Bus Fare ($2.50)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Expense Filters -->
+            <div class="section">
+                <h2>Filter Expenses</h2>
+                <div class="filters">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="filterStartDate">Start Date</label>
+                            <input type="date" id="filterStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="filterEndDate">End Date</label>
+                            <input type="date" id="filterEndDate">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="filterCategory">Category</label>
+                            <select id="filterCategory">
+                                <option value="">All Categories</option>
+                                <option value="Food">Food</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Groceries">Groceries</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Bills">Bills</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Education">Education</option>
+                                <option value="Miscellaneous">Miscellaneous</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterPaymentMethod">Payment Method</label>
+                            <select id="filterPaymentMethod">
+                                <option value="">All Methods</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Digital Wallet">Digital Wallet</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="applyFilters" class="btn btn-secondary">Apply Filters</button>
+                        <button id="clearFilters" class="btn btn-outline">Clear Filters</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense List -->
+            <div class="section">
+                <h2>All Expenses</h2>
+                <div id="expenseList" class="transaction-list"></div>
+            </div>
+        </div>
+
+        <!-- Income Tab -->
+        <div id="income" class="tab-content">
+            <div class="section">
+                <h2>Add New Income</h2>
+                <form id="incomeForm" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="incomeDate">Date</label>
+                            <input type="date" id="incomeDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="incomeAmount">Amount ($)</label>
+                            <input type="number" id="incomeAmount" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="incomeSource">Source</label>
+                        <input type="text" id="incomeSource" placeholder="e.g., Salary, Freelance, Gift" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Income</button>
+                </form>
+            </div>
+
+            <!-- Income List -->
+            <div class="section">
+                <h2>All Income</h2>
+                <div id="incomeList" class="transaction-list"></div>
+            </div>
+        </div>
+
+        <!-- Budget Tab -->
+        <div id="budget" class="tab-content">
+            <div class="section">
+                <h2>Set Category Budgets</h2>
+                <form id="budgetForm" class="form">
+                    <div class="form-group">
+                        <label for="budgetCategory">Category</label>
+                        <select id="budgetCategory" required>
+                            <option value="Total">Total (All Categories)</option>
+                            <option value="Food">Food</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Miscellaneous">Miscellaneous</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="budgetAmount">Budget Amount ($)</label>
+                            <input type="number" id="budgetAmount" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="budgetPeriod">Period</label>
+                            <select id="budgetPeriod" required>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Set Budget</button>
+                </form>
+            </div>
+
+            <!-- Budget List -->
+            <div class="section">
+                <h2>Active Budgets</h2>
+                <div id="budgetList" class="budget-list"></div>
+            </div>
+
+            <!-- Budget History -->
+            <div class="section">
+                <h2>Budget History</h2>
+                <p style="color: #6c757d; margin-bottom: 15px;">View your budget performance over past periods</p>
+                <div style="margin-bottom: 15px;">
+                    <label for="historyBudgetSelect" style="font-weight: 600; margin-right: 10px;">Select Budget:</label>
+                    <select id="historyBudgetSelect" style="padding: 8px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+                        <option value="">Choose a budget...</option>
+                    </select>
+                    <button id="viewHistoryBtn" class="btn btn-secondary" style="margin-left: 10px;">View History</button>
+                </div>
+                <div id="budgetHistory" class="budget-history"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
