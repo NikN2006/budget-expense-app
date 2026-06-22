@@ -10,6 +10,7 @@ class BudgetExpenseTracker {
         this.chart = null;
         this.editingExpense = null;
         this.editingIncome = null;
+        this.dashboardPeriod = 'all'; // Default to all time
         
         // Category emoji mapping
         this.categoryEmojiMap = {
@@ -795,6 +796,73 @@ class BudgetExpenseTracker {
     }
 
     // Dashboard Methods
+    setDashboardPeriod(period) {
+        this.dashboardPeriod = period;
+        
+        // Update active button
+        document.querySelectorAll('.period-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.period === period) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Update dashboard with filtered data
+        this.updateDashboard();
+    }
+
+    getFilteredDataByPeriod() {
+        if (this.dashboardPeriod === 'all') {
+            return {
+                expenses: this.expenses,
+                income: this.income
+            };
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let startDate;
+        
+        if (this.dashboardPeriod === 'today') {
+            startDate = today;
+        } else if (this.dashboardPeriod === 'week') {
+            // Get start of week (Sunday)
+            startDate = new Date(today);
+            startDate.setDate(today.getDate() - today.getDay());
+        } else if (this.dashboardPeriod === 'month') {
+            // Get start of month
+            startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        }
+
+        const filteredExpenses = this.expenses.filter(exp => {
+            const expDate = new Date(exp.date);
+            expDate.setHours(0, 0, 0, 0);
+            return expDate >= startDate;
+        });
+
+        const filteredIncome = this.income.filter(inc => {
+            const incDate = new Date(inc.date);
+            incDate.setHours(0, 0, 0, 0);
+            return incDate >= startDate;
+        });
+
+        return {
+            expenses: filteredExpenses,
+            income: filteredIncome
+        };
+    }
+
+    getPeriodLabel() {
+        const labels = {
+            'all': 'All time',
+            'today': 'Today',
+            'week': 'This week',
+            'month': 'This month'
+        };
+        return labels[this.dashboardPeriod] || 'All time';
+    }
+
     updateDashboard() {
         this.updateSummaryCards();
         this.updateBudgetStatus();
@@ -804,13 +872,20 @@ class BudgetExpenseTracker {
     }
 
     updateSummaryCards() {
-        const totalIncome = this.income.reduce((sum, inc) => sum + inc.amount, 0);
-        const totalExpenses = this.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+        const filtered = this.getFilteredDataByPeriod();
+        const totalIncome = filtered.income.reduce((sum, inc) => sum + inc.amount, 0);
+        const totalExpenses = filtered.expenses.reduce((sum, exp) => sum + exp.amount, 0);
         const netBalance = totalIncome - totalExpenses;
+
+        const periodLabel = this.getPeriodLabel();
 
         document.getElementById('totalIncome').textContent = `$${totalIncome.toFixed(2)}`;
         document.getElementById('totalExpenses').textContent = `$${totalExpenses.toFixed(2)}`;
         document.getElementById('netBalance').textContent = `$${netBalance.toFixed(2)}`;
+        
+        document.getElementById('incomeLabel').textContent = periodLabel;
+        document.getElementById('expenseLabel').textContent = periodLabel;
+        document.getElementById('balanceLabel').textContent = `${periodLabel} - Income - Expenses`;
     }
 
     updateBudgetStatus() {
@@ -845,8 +920,11 @@ class BudgetExpenseTracker {
         const categoryTotals = {};
         let totalExpenses = 0;
 
+        // Use filtered expenses based on dashboard period
+        const filtered = this.getFilteredDataByPeriod();
+        
         // Normalize categories by removing emojis before grouping
-        this.expenses.forEach(exp => {
+        filtered.expenses.forEach(exp => {
             const normalizedCategory = this.getCategoryWithoutEmoji(exp.category);
             categoryTotals[normalizedCategory] = (categoryTotals[normalizedCategory] || 0) + exp.amount;
             totalExpenses += exp.amount;
@@ -949,7 +1027,10 @@ class BudgetExpenseTracker {
         const methodTotals = {};
         let totalExpenses = 0;
 
-        this.expenses.forEach(exp => {
+        // Use filtered expenses based on dashboard period
+        const filtered = this.getFilteredDataByPeriod();
+        
+        filtered.expenses.forEach(exp => {
             methodTotals[exp.paymentMethod] = (methodTotals[exp.paymentMethod] || 0) + exp.amount;
             totalExpenses += exp.amount;
         });
@@ -985,10 +1066,13 @@ class BudgetExpenseTracker {
     updateRecentTransactions() {
         const container = document.getElementById('recentTransactions');
         
+        // Use filtered data based on dashboard period
+        const filtered = this.getFilteredDataByPeriod();
+        
         // Combine expenses and income
         const allTransactions = [
-            ...this.expenses.map(exp => ({ ...exp, type: 'expense' })),
-            ...this.income.map(inc => ({ ...inc, type: 'income' }))
+            ...filtered.expenses.map(exp => ({ ...exp, type: 'expense' })),
+            ...filtered.income.map(inc => ({ ...inc, type: 'income' }))
         ];
 
         // Sort by date (newest first) and take top 5

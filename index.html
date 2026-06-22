@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Budget & Expense Tracker</title>
+    <title>Expense Tracker</title>
     
     <!-- iOS-specific meta tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,7 +17,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>💰 Nik's Expense Tracker</h1>
+            <h1>💰 Expense Tracker</h1>
             <p class="subtitle">Track your income, expenses, and stay within budget</p>
         </header>
 
@@ -31,21 +31,34 @@
 
         <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content active">
+            <!-- Time Period Filter -->
+            <div class="section" style="padding: 15px 20px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="margin: 0; font-size: 1.1rem;">Time Period:</h3>
+                    <div class="time-period-buttons" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="period-btn active" data-period="all" onclick="tracker.setDashboardPeriod('all')">All Time</button>
+                        <button class="period-btn" data-period="today" onclick="tracker.setDashboardPeriod('today')">Today</button>
+                        <button class="period-btn" data-period="week" onclick="tracker.setDashboardPeriod('week')">This Week</button>
+                        <button class="period-btn" data-period="month" onclick="tracker.setDashboardPeriod('month')">This Month</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="summary-cards">
                 <div class="card income-card">
                     <h3>Total Income</h3>
                     <p class="amount" id="totalIncome">$0.00</p>
-                    <span class="label">All time</span>
+                    <span class="label" id="incomeLabel">All time</span>
                 </div>
                 <div class="card expense-card">
                     <h3>Total Expenses</h3>
                     <p class="amount" id="totalExpenses">$0.00</p>
-                    <span class="label">All time</span>
+                    <span class="label" id="expenseLabel">All time</span>
                 </div>
                 <div class="card balance-card">
                     <h3>Net Balance</h3>
                     <p class="amount" id="netBalance">$0.00</p>
-                    <span class="label">Income - Expenses</span>
+                    <span class="label" id="balanceLabel">Income - Expenses</span>
                 </div>
             </div>
 
