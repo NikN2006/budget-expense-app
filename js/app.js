@@ -897,19 +897,37 @@ class BudgetExpenseTracker {
 
     updateSummaryCards() {
         const filtered = this.getFilteredDataByPeriod();
-        const totalIncome = filtered.income.reduce((sum, inc) => sum + inc.amount, 0);
+        
+        // For filtered views (Today, This Week, This Month), show most recent income
+        // For "All Time", show total income
+        let totalIncome;
+        if (this.dashboardPeriod === 'all') {
+            totalIncome = filtered.income.reduce((sum, inc) => sum + inc.amount, 0);
+        } else {
+            // Get the most recent income entry
+            if (filtered.income.length > 0) {
+                const sortedIncome = [...filtered.income].sort((a, b) =>
+                    new Date(b.date) - new Date(a.date)
+                );
+                totalIncome = sortedIncome[0].amount;
+            } else {
+                totalIncome = 0;
+            }
+        }
+        
         const totalExpenses = filtered.expenses.reduce((sum, exp) => sum + exp.amount, 0);
         const netBalance = totalIncome - totalExpenses;
 
         const periodLabel = this.getPeriodLabel();
+        const incomeLabel = this.dashboardPeriod === 'all' ? periodLabel : 'Most recent';
 
         document.getElementById('totalIncome').textContent = `$${totalIncome.toFixed(2)}`;
         document.getElementById('totalExpenses').textContent = `$${totalExpenses.toFixed(2)}`;
         document.getElementById('netBalance').textContent = `$${netBalance.toFixed(2)}`;
         
-        document.getElementById('incomeLabel').textContent = periodLabel;
+        document.getElementById('incomeLabel').textContent = incomeLabel;
         document.getElementById('expenseLabel').textContent = periodLabel;
-        document.getElementById('balanceLabel').textContent = `${periodLabel} - Income - Expenses`;
+        document.getElementById('balanceLabel').textContent = `${incomeLabel} income - ${periodLabel} expenses`;
     }
 
     updateBudgetStatus() {
