@@ -862,9 +862,13 @@ class BudgetExpenseTracker {
             return expDate >= startDate;
         });
 
+        // Income filtering: Shift income forward by 7 days (counts for next week's spending)
         const filteredIncome = this.income.filter(inc => {
             const incDate = parseLocalDate(inc.date);
-            return incDate >= startDate;
+            // Add 7 days to income date to count it for the following week
+            const incDatePlusWeek = new Date(incDate);
+            incDatePlusWeek.setDate(incDate.getDate() + 7);
+            return incDatePlusWeek >= startDate;
         });
 
         return {
