@@ -79,12 +79,12 @@ class BudgetExpenseTracker {
         this.setDefaultDates();
         this.populateCategoryDropdowns();
         this.loadTheme();
-        this.loadApiKey();
         this.switchTab('dashboard');
         this.updateDashboard();
     }
 
     loadApiKey() {
+        // Load API key into input field when Settings tab is opened
         if (this.geminiApiKey) {
             const apiKeyInput = document.getElementById('geminiApiKey');
             if (apiKeyInput) {
@@ -1233,6 +1233,7 @@ class BudgetExpenseTracker {
     showNotification(message, type) {
         // Simple notification - you can enhance this
         alert(message);
+    }
 
     // AI Methods
     saveApiKey() {
