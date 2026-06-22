@@ -11,6 +11,7 @@ class BudgetExpenseTracker {
         this.editingExpense = null;
         this.editingIncome = null;
         this.dashboardPeriod = 'all'; // Default to all time
+        this.currentTheme = this.loadFromStorage('theme') || 'dark-purple';
         
         // Category emoji mapping
         this.categoryEmojiMap = {
@@ -76,8 +77,21 @@ class BudgetExpenseTracker {
         this.setupEventListeners();
         this.setDefaultDates();
         this.populateCategoryDropdowns();
+        this.loadTheme();
         this.switchTab('dashboard');
         this.updateDashboard();
+    }
+
+    // Theme Management
+    changeTheme(theme) {
+        this.currentTheme = theme;
+        document.body.setAttribute('data-theme', theme);
+        this.saveToStorage('theme', theme);
+    }
+
+    loadTheme() {
+        document.body.setAttribute('data-theme', this.currentTheme);
+        document.getElementById('themeSelect').value = this.currentTheme;
     }
 
     // Storage Methods

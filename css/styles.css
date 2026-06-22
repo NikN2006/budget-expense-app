@@ -4,6 +4,69 @@
     box-sizing: border-box;
 }
 
+/* Theme Variables */
+:root {
+    --bg-gradient-start: #1a1a1a;
+    --bg-gradient-mid: #2d2d2d;
+    --bg-gradient-end: #1f1f1f;
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+}
+
+/* Theme: Dark Purple (Default) */
+body[data-theme="dark-purple"] {
+    --bg-gradient-start: #1a1a1a;
+    --bg-gradient-mid: #2d2d2d;
+    --bg-gradient-end: #1f1f1f;
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+}
+
+/* Theme: Ocean Blue */
+body[data-theme="ocean-blue"] {
+    --bg-gradient-start: #0a1929;
+    --bg-gradient-mid: #1e3a5f;
+    --bg-gradient-end: #0d2847;
+    --primary-color: #4facfe;
+    --secondary-color: #00f2fe;
+}
+
+/* Theme: Sunset Orange */
+body[data-theme="sunset-orange"] {
+    --bg-gradient-start: #2d1b1b;
+    --bg-gradient-mid: #4a2c2c;
+    --bg-gradient-end: #331f1f;
+    --primary-color: #ff6b6b;
+    --secondary-color: #ffa500;
+}
+
+/* Theme: Forest Green */
+body[data-theme="forest-green"] {
+    --bg-gradient-start: #1a2e1a;
+    --bg-gradient-mid: #2d4a2d;
+    --bg-gradient-end: #1f331f;
+    --primary-color: #51cf66;
+    --secondary-color: #43e97b;
+}
+
+/* Theme: Rose Pink */
+body[data-theme="rose-pink"] {
+    --bg-gradient-start: #2d1a2d;
+    --bg-gradient-mid: #4a2d4a;
+    --bg-gradient-end: #331f33;
+    --primary-color: #f093fb;
+    --secondary-color: #fa709a;
+}
+
+/* Theme: Midnight Black */
+body[data-theme="midnight-black"] {
+    --bg-gradient-start: #000000;
+    --bg-gradient-mid: #1a1a1a;
+    --bg-gradient-end: #0d0d0d;
+    --primary-color: #ffffff;
+    --secondary-color: #cccccc;
+}
+
 /* iOS-specific optimizations */
 html {
     /* Prevent text size adjustment on orientation change */
@@ -16,7 +79,7 @@ html {
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1f1f1f 100%);
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
     min-height: 100vh;
     min-height: -webkit-fill-available; /* iOS Safari fix */
     padding: 10px;
@@ -28,6 +91,7 @@ body {
     -webkit-overflow-scrolling: touch;
     /* Prevent pull-to-refresh on iOS */
     overscroll-behavior-y: contain;
+    transition: background 0.5s ease;
 }
 
 /* Animated background elements */
@@ -331,6 +395,44 @@ header h1 {
 
 .btn-outline:hover {
     background: rgba(255, 255, 255, 0.15);
+}
+
+/* Theme Selector */
+.theme-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.theme-dropdown {
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0px;
+    font-size: 15px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    min-height: 44px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-dropdown:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.theme-dropdown option {
+    background: #2d2d2d;
+    color: white;
 }
 
 /* Period Filter Buttons */

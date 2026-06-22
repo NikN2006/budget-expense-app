@@ -17,8 +17,23 @@
 <body>
     <div class="container">
         <header>
-            <h1>💰 Expense Tracker</h1>
-            <p class="subtitle">Track your income, expenses, and stay within budget</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h1>💰 Expense Tracker</h1>
+                    <p class="subtitle">Track your income, expenses, and stay within budget</p>
+                </div>
+                <div class="theme-selector">
+                    <label for="themeSelect" style="font-size: 0.9rem; margin-right: 8px;">🎨 Theme:</label>
+                    <select id="themeSelect" onchange="tracker.changeTheme(this.value)" class="theme-dropdown">
+                        <option value="dark-purple">Dark Purple</option>
+                        <option value="ocean-blue">Ocean Blue</option>
+                        <option value="sunset-orange">Sunset Orange</option>
+                        <option value="forest-green">Forest Green</option>
+                        <option value="rose-pink">Rose Pink</option>
+                        <option value="midnight-black">Midnight Black</option>
+                    </select>
+                </div>
+            </div>
         </header>
 
         <!-- Navigation Tabs -->
