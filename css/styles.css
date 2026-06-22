@@ -6,65 +6,83 @@
 
 /* Theme Variables */
 :root {
-    --bg-gradient-start: #1a1a1a;
-    --bg-gradient-mid: #2d2d2d;
-    --bg-gradient-end: #1f1f1f;
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
+    --bg-gradient-start: #1a0033;
+    --bg-gradient-mid: #4a0080;
+    --bg-gradient-end: #2d0052;
+    --primary-color: #a855f7;
+    --secondary-color: #ec4899;
 }
 
-/* Theme: Dark Purple (Default) */
-body[data-theme="dark-purple"] {
-    --bg-gradient-start: #1a1a1a;
-    --bg-gradient-mid: #2d2d2d;
-    --bg-gradient-end: #1f1f1f;
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
+/* Theme: Electric Purple (Default) */
+body[data-theme="electric-purple"] {
+    --bg-gradient-start: #1a0033;
+    --bg-gradient-mid: #4a0080;
+    --bg-gradient-end: #2d0052;
+    --primary-color: #a855f7;
+    --secondary-color: #ec4899;
 }
 
-/* Theme: Ocean Blue */
-body[data-theme="ocean-blue"] {
-    --bg-gradient-start: #0a1929;
-    --bg-gradient-mid: #1e3a5f;
-    --bg-gradient-end: #0d2847;
-    --primary-color: #4facfe;
-    --secondary-color: #00f2fe;
+/* Theme: Neon Cyan */
+body[data-theme="neon-cyan"] {
+    --bg-gradient-start: #001a33;
+    --bg-gradient-mid: #00334d;
+    --bg-gradient-end: #002640;
+    --primary-color: #06b6d4;
+    --secondary-color: #22d3ee;
 }
 
-/* Theme: Sunset Orange */
-body[data-theme="sunset-orange"] {
-    --bg-gradient-start: #2d1b1b;
-    --bg-gradient-mid: #4a2c2c;
-    --bg-gradient-end: #331f1f;
-    --primary-color: #ff6b6b;
-    --secondary-color: #ffa500;
+/* Theme: Vibrant Sunset */
+body[data-theme="vibrant-sunset"] {
+    --bg-gradient-start: #4a1a00;
+    --bg-gradient-mid: #802900;
+    --bg-gradient-end: #661f00;
+    --primary-color: #fb923c;
+    --secondary-color: #f59e0b;
 }
 
-/* Theme: Forest Green */
-body[data-theme="forest-green"] {
-    --bg-gradient-start: #1a2e1a;
-    --bg-gradient-mid: #2d4a2d;
-    --bg-gradient-end: #1f331f;
-    --primary-color: #51cf66;
-    --secondary-color: #43e97b;
+/* Theme: Emerald Dream */
+body[data-theme="emerald-dream"] {
+    --bg-gradient-start: #003d1a;
+    --bg-gradient-mid: #00662b;
+    --bg-gradient-end: #004d21;
+    --primary-color: #10b981;
+    --secondary-color: #34d399;
 }
 
-/* Theme: Rose Pink */
-body[data-theme="rose-pink"] {
-    --bg-gradient-start: #2d1a2d;
-    --bg-gradient-mid: #4a2d4a;
-    --bg-gradient-end: #331f33;
-    --primary-color: #f093fb;
-    --secondary-color: #fa709a;
+/* Theme: Hot Pink */
+body[data-theme="hot-pink"] {
+    --bg-gradient-start: #4d0026;
+    --bg-gradient-mid: #800040;
+    --bg-gradient-end: #660033;
+    --primary-color: #ec4899;
+    --secondary-color: #f472b6;
 }
 
-/* Theme: Midnight Black */
-body[data-theme="midnight-black"] {
-    --bg-gradient-start: #000000;
-    --bg-gradient-mid: #1a1a1a;
-    --bg-gradient-end: #0d0d0d;
-    --primary-color: #ffffff;
-    --secondary-color: #cccccc;
+/* Theme: Deep Ocean */
+body[data-theme="deep-ocean"] {
+    --bg-gradient-start: #001a4d;
+    --bg-gradient-mid: #002966;
+    --bg-gradient-end: #00205c;
+    --primary-color: #3b82f6;
+    --secondary-color: #60a5fa;
+}
+
+/* Theme: Lime Burst */
+body[data-theme="lime-burst"] {
+    --bg-gradient-start: #1a3300;
+    --bg-gradient-mid: #2d5500;
+    --bg-gradient-end: #234000;
+    --primary-color: #84cc16;
+    --secondary-color: #a3e635;
+}
+
+/* Theme: Royal Gold */
+body[data-theme="royal-gold"] {
+    --bg-gradient-start: #332200;
+    --bg-gradient-mid: #664400;
+    --bg-gradient-end: #4d3300;
+    --primary-color: #fbbf24;
+    --secondary-color: #fcd34d;
 }
 
 /* iOS-specific optimizations */

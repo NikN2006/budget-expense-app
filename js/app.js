@@ -11,7 +11,7 @@ class BudgetExpenseTracker {
         this.editingExpense = null;
         this.editingIncome = null;
         this.dashboardPeriod = 'all'; // Default to all time
-        this.currentTheme = this.loadFromStorage('theme') || 'dark-purple';
+        this.currentTheme = this.loadFromStorage('theme') || 'electric-purple';
         
         // Category emoji mapping
         this.categoryEmojiMap = {

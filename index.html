@@ -17,21 +17,10 @@
 <body>
     <div class="container">
         <header>
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                <div>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <div style="text-align: center;">
                     <h1>💰 Expense Tracker</h1>
                     <p class="subtitle">Track your income, expenses, and stay within budget</p>
-                </div>
-                <div class="theme-selector">
-                    <label for="themeSelect" style="font-size: 0.9rem; margin-right: 8px;">🎨 Theme:</label>
-                    <select id="themeSelect" onchange="tracker.changeTheme(this.value)" class="theme-dropdown">
-                        <option value="dark-purple">Dark Purple</option>
-                        <option value="ocean-blue">Ocean Blue</option>
-                        <option value="sunset-orange">Sunset Orange</option>
-                        <option value="forest-green">Forest Green</option>
-                        <option value="rose-pink">Rose Pink</option>
-                        <option value="midnight-black">Midnight Black</option>
-                    </select>
                 </div>
             </div>
         </header>
@@ -42,6 +31,7 @@
             <button class="tab-btn" data-tab="expenses">💸 Expenses</button>
             <button class="tab-btn" data-tab="income">💵 Income</button>
             <button class="tab-btn" data-tab="budget">🎯 Budget</button>
+            <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
         </nav>
 
         <!-- Dashboard Tab -->
@@ -75,23 +65,6 @@
                     <p class="amount" id="netBalance">$0.00</p>
                     <span class="label" id="balanceLabel">All time</span>
                 </div>
-            </div>
-
-            <!-- Data Management -->
-            <div class="section">
-                <h2>📦 Data Management</h2>
-                <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 15px;">Backup your data or sync between devices</p>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <button onclick="tracker.exportData()" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
-                        📥 Export Data
-                    </button>
-                    <button onclick="tracker.importData()" class="btn btn-secondary" style="display: flex; align-items: center; gap: 8px;">
-                        📤 Import Data
-                    </button>
-                </div>
-                <p style="color: rgba(255, 255, 255, 0.7); margin-top: 15px; font-size: 0.9rem;">
-                    💡 Tip: Export your data on one device and import it on another to sync your expenses, income, and budgets.
-                </p>
             </div>
 
             <!-- Budget Status Overview -->
@@ -329,8 +302,61 @@
                 <div id="budgetHistory" class="budget-history"></div>
             </div>
         </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <div class="section">
+                <h2>🎨 Theme Customization</h2>
+                <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 20px;">Choose your favorite vibrant theme</p>
+                <div class="form-group">
+                    <label for="themeSelect">Select Theme</label>
+                    <select id="themeSelect" onchange="tracker.changeTheme(this.value)" class="theme-dropdown">
+                        <option value="electric-purple">⚡ Electric Purple</option>
+                        <option value="neon-cyan">💎 Neon Cyan</option>
+                        <option value="vibrant-sunset">🌅 Vibrant Sunset</option>
+                        <option value="emerald-dream">💚 Emerald Dream</option>
+                        <option value="hot-pink">💗 Hot Pink</option>
+                        <option value="deep-ocean">🌊 Deep Ocean</option>
+                        <option value="lime-burst">🍋 Lime Burst</option>
+                        <option value="royal-gold">👑 Royal Gold</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="section">
+                <h2>📦 Data Management</h2>
+                <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 15px;">Backup your data or sync between devices</p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button onclick="tracker.exportData()" class="btn btn-primary" style="display: flex; align-items: center; gap: 8px;">
+                        📥 Export Data
+                    </button>
+                    <button onclick="tracker.importData()" class="btn btn-secondary" style="display: flex; align-items: center; gap: 8px;">
+                        📤 Import Data
+                    </button>
+                </div>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-top: 15px; font-size: 0.9rem;">
+                    💡 Tip: Export your data on one device and import it on another to sync your expenses, income, and budgets.
+                </p>
+            </div>
+
+            <!-- App Info -->
+            <div class="section">
+                <h2>ℹ️ About</h2>
+                <p style="color: rgba(255, 255, 255, 0.85); line-height: 1.6;">
+                    <strong>Expense Tracker</strong> helps you manage your finances with ease.<br><br>
+                    Features:<br>
+                    • Track income and expenses<br>
+                    • Set and monitor budgets<br>
+                    • Beautiful visualizations<br>
+                    • Export/Import data<br>
+                    • Multiple vibrant themes<br>
+                    • Mobile-optimized for iOS
+                </p>
+            </div>
+        </div>
     </div>
 
-    <script src="js/app.js?v=2"></script>
+    <script src="js/app.js?v=3"></script>
 </body>
 </html>
