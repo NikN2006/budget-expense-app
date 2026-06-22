@@ -323,6 +323,11 @@ class BudgetExpenseTracker {
             content.classList.remove('active');
         });
         document.getElementById(tabName).classList.add('active');
+        
+        // Load API key when switching to Settings tab
+        if (tabName === 'settings') {
+            this.loadApiKey();
+        }
 
         // Refresh content based on tab
         if (tabName === 'dashboard') {
