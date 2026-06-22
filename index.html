@@ -118,7 +118,7 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="expenseCategory">Category</label>
+                            <label for="expenseCategory">Category <button type="button" onclick="tracker.suggestCategory()" class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px; margin-left: 10px;" title="AI will suggest a category based on description">✨ AI Suggest</button></label>
                             <select id="expenseCategory" required>
                                 <option value="Food">Food</option>
                                 <option value="Entertainment">Entertainment</option>
@@ -305,6 +305,24 @@
 
         <!-- Settings Tab -->
         <div id="settings" class="tab-content">
+            <!-- AI Configuration -->
+            <div class="section">
+                <h2>🤖 AI Configuration</h2>
+                <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 15px;">Enable AI-powered smart categorization for your expenses</p>
+                <div class="form-group">
+                    <label for="geminiApiKey">Gemini API Key</label>
+                    <input type="password" id="geminiApiKey" placeholder="Enter your Gemini API key" style="font-family: monospace;">
+                </div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+                    <button onclick="tracker.saveApiKey()" class="btn btn-primary">💾 Save API Key</button>
+                    <button onclick="tracker.testAiConnection()" class="btn btn-secondary">🧪 Test Connection</button>
+                </div>
+                <div id="aiStatus" style="margin-top: 15px; padding: 12px; border-radius: 8px; display: none;"></div>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-top: 15px; font-size: 0.9rem;">
+                    💡 Get your free API key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #a855f7;">Google AI Studio</a>
+                </p>
+            </div>
+
             <div class="section">
                 <h2>🎨 Theme Customization</h2>
                 <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 20px;">Choose your favorite vibrant theme</p>
@@ -357,6 +375,6 @@
         </div>
     </div>
 
-    <script src="js/app.js?v=3"></script>
+    <script src="js/app.js?v=4"></script>
 </body>
 </html>

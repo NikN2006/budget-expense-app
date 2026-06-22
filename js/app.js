@@ -12,6 +12,7 @@ class BudgetExpenseTracker {
         this.editingIncome = null;
         this.dashboardPeriod = 'all'; // Default to all time
         this.currentTheme = this.loadFromStorage('theme') || 'electric-purple';
+        this.geminiApiKey = this.loadFromStorage('geminiApiKey') || '';
         
         // Category emoji mapping
         this.categoryEmojiMap = {
@@ -78,8 +79,18 @@ class BudgetExpenseTracker {
         this.setDefaultDates();
         this.populateCategoryDropdowns();
         this.loadTheme();
+        this.loadApiKey();
         this.switchTab('dashboard');
         this.updateDashboard();
+    }
+
+    loadApiKey() {
+        if (this.geminiApiKey) {
+            const apiKeyInput = document.getElementById('geminiApiKey');
+            if (apiKeyInput) {
+                apiKeyInput.value = this.geminiApiKey;
+            }
+        }
     }
 
     // Theme Management
@@ -1222,6 +1233,151 @@ class BudgetExpenseTracker {
     showNotification(message, type) {
         // Simple notification - you can enhance this
         alert(message);
+
+    // AI Methods
+    saveApiKey() {
+        const apiKey = document.getElementById('geminiApiKey').value.trim();
+        if (!apiKey) {
+            this.showAiStatus('Please enter an API key', 'error');
+            return;
+        }
+        
+        this.geminiApiKey = apiKey;
+        this.saveToStorage('geminiApiKey', apiKey);
+        this.showAiStatus('✅ API key saved successfully!', 'success');
+        
+        // Load the key into the input field
+        document.getElementById('geminiApiKey').value = apiKey;
+    }
+
+    async testAiConnection() {
+        if (!this.geminiApiKey) {
+            this.showAiStatus('Please save your API key first', 'error');
+            return;
+        }
+
+        this.showAiStatus('🔄 Testing connection...', 'info');
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.geminiApiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: 'Hello'
+                        }]
+                    }]
+                })
+            });
+
+            if (response.ok) {
+                this.showAiStatus('✅ Connection successful! AI is ready to use.', 'success');
+            } else {
+                const error = await response.json();
+                this.showAiStatus(`❌ Connection failed: ${error.error?.message || 'Invalid API key'}`, 'error');
+            }
+        } catch (error) {
+            this.showAiStatus(`❌ Connection failed: ${error.message}`, 'error');
+        }
+    }
+
+    async suggestCategory() {
+        const description = document.getElementById('expenseDescription').value.trim();
+        
+        if (!description) {
+            alert('Please enter a description first');
+            return;
+        }
+
+        if (!this.geminiApiKey) {
+            alert('Please configure your Gemini API key in Settings first');
+            return;
+        }
+
+        // Show loading state
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '⏳ Thinking...';
+        button.disabled = true;
+
+        try {
+            const categories = ['Food', 'Entertainment', 'Groceries', 'Transportation', 'Shopping', 'Bills', 'Healthcare', 'Education', 'Miscellaneous'];
+            
+            const prompt = `You are a financial categorization assistant. Based on the expense description, suggest the most appropriate category.
+
+Expense description: "${description}"
+
+Available categories: ${categories.join(', ')}
+
+Respond with ONLY the category name, nothing else. Choose the single most appropriate category.`;
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.geminiApiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: prompt
+                        }]
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('AI request failed');
+            }
+
+            const data = await response.json();
+            const suggestedCategory = data.candidates[0].content.parts[0].text.trim();
+            
+            // Validate the category
+            if (categories.includes(suggestedCategory)) {
+                document.getElementById('expenseCategory').value = suggestedCategory;
+                alert(`✨ AI suggests: ${suggestedCategory}`);
+            } else {
+                // Try to find a partial match
+                const match = categories.find(cat => suggestedCategory.toLowerCase().includes(cat.toLowerCase()));
+                if (match) {
+                    document.getElementById('expenseCategory').value = match;
+                    alert(`✨ AI suggests: ${match}`);
+                } else {
+                    alert('AI could not determine a category. Please select manually.');
+                }
+            }
+        } catch (error) {
+            alert('Failed to get AI suggestion. Please check your API key in Settings.');
+            console.error('AI Error:', error);
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+
+    showAiStatus(message, type) {
+        const statusDiv = document.getElementById('aiStatus');
+        statusDiv.style.display = 'block';
+        statusDiv.textContent = message;
+        
+        // Set colors based on type
+        if (type === 'success') {
+            statusDiv.style.background = 'rgba(81, 207, 102, 0.3)';
+            statusDiv.style.border = '1px solid rgba(81, 207, 102, 0.5)';
+            statusDiv.style.color = 'white';
+        } else if (type === 'error') {
+            statusDiv.style.background = 'rgba(255, 107, 107, 0.3)';
+            statusDiv.style.border = '1px solid rgba(255, 107, 107, 0.5)';
+            statusDiv.style.color = 'white';
+        } else {
+            statusDiv.style.background = 'rgba(255, 193, 7, 0.3)';
+            statusDiv.style.border = '1px solid rgba(255, 193, 7, 0.5)';
+            statusDiv.style.color = 'white';
+        }
+    }
     }
 }
 
