@@ -862,14 +862,24 @@ class BudgetExpenseTracker {
             return expDate >= startDate;
         });
 
-        // Income filtering: Shift income forward by 7 days (counts for next week's spending)
-        const filteredIncome = this.income.filter(inc => {
-            const incDate = parseLocalDate(inc.date);
-            // Add 7 days to income date to count it for the following week
-            const incDatePlusWeek = new Date(incDate);
-            incDatePlusWeek.setDate(incDate.getDate() + 7);
-            return incDatePlusWeek >= startDate;
-        });
+        // Income filtering logic based on period
+        let filteredIncome;
+        if (this.dashboardPeriod === 'month') {
+            // For "This Month": Include all income entered in this month (no date shifting)
+            filteredIncome = this.income.filter(inc => {
+                const incDate = parseLocalDate(inc.date);
+                return incDate >= startDate;
+            });
+        } else {
+            // For "Today" and "This Week": Shift income forward by 7 days (counts for next week's spending)
+            filteredIncome = this.income.filter(inc => {
+                const incDate = parseLocalDate(inc.date);
+                // Add 7 days to income date to count it for the following week
+                const incDatePlusWeek = new Date(incDate);
+                incDatePlusWeek.setDate(incDate.getDate() + 7);
+                return incDatePlusWeek >= startDate;
+            });
+        }
 
         return {
             expenses: filteredExpenses,
@@ -898,13 +908,18 @@ class BudgetExpenseTracker {
     updateSummaryCards() {
         const filtered = this.getFilteredDataByPeriod();
         
-        // For filtered views (Today, This Week, This Month), show most recent income
-        // For "All Time", show total income
+        // Income calculation logic:
+        // - Today & This Week: Most recent income
+        // - This Month & All Time: Sum of all income in period
         let totalIncome;
-        if (this.dashboardPeriod === 'all') {
+        let incomeLabel;
+        
+        if (this.dashboardPeriod === 'all' || this.dashboardPeriod === 'month') {
+            // Sum all income for "All Time" and "This Month"
             totalIncome = filtered.income.reduce((sum, inc) => sum + inc.amount, 0);
+            incomeLabel = this.getPeriodLabel();
         } else {
-            // Get the most recent income entry
+            // Get most recent income for "Today" and "This Week"
             if (filtered.income.length > 0) {
                 const sortedIncome = [...filtered.income].sort((a, b) =>
                     new Date(b.date) - new Date(a.date)
@@ -913,13 +928,12 @@ class BudgetExpenseTracker {
             } else {
                 totalIncome = 0;
             }
+            incomeLabel = 'Most recent';
         }
         
         const totalExpenses = filtered.expenses.reduce((sum, exp) => sum + exp.amount, 0);
         const netBalance = totalIncome - totalExpenses;
-
         const periodLabel = this.getPeriodLabel();
-        const incomeLabel = this.dashboardPeriod === 'all' ? periodLabel : 'Most recent';
 
         document.getElementById('totalIncome').textContent = `$${totalIncome.toFixed(2)}`;
         document.getElementById('totalExpenses').textContent = `$${totalExpenses.toFixed(2)}`;
@@ -927,7 +941,7 @@ class BudgetExpenseTracker {
         
         document.getElementById('incomeLabel').textContent = incomeLabel;
         document.getElementById('expenseLabel').textContent = periodLabel;
-        document.getElementById('balanceLabel').textContent = `${incomeLabel} income - ${periodLabel} expenses`;
+        document.getElementById('balanceLabel').textContent = periodLabel;
     }
 
     updateBudgetStatus() {
