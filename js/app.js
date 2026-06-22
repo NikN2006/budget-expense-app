@@ -830,20 +830,26 @@ class BudgetExpenseTracker {
             // Get start of week (Sunday)
             startDate = new Date(today);
             startDate.setDate(today.getDate() - today.getDay());
+            startDate.setHours(0, 0, 0, 0);
         } else if (this.dashboardPeriod === 'month') {
             // Get start of month
             startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            startDate.setHours(0, 0, 0, 0);
         }
 
+        // Helper function to parse date string in local timezone
+        const parseLocalDate = (dateString) => {
+            const [year, month, day] = dateString.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        };
+
         const filteredExpenses = this.expenses.filter(exp => {
-            const expDate = new Date(exp.date);
-            expDate.setHours(0, 0, 0, 0);
+            const expDate = parseLocalDate(exp.date);
             return expDate >= startDate;
         });
 
         const filteredIncome = this.income.filter(inc => {
-            const incDate = new Date(inc.date);
-            incDate.setHours(0, 0, 0, 0);
+            const incDate = parseLocalDate(inc.date);
             return incDate >= startDate;
         });
 
