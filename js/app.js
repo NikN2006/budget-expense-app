@@ -204,9 +204,15 @@ class BudgetExpenseTracker {
     }
 
     setDefaultDates() {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('expenseDate').value = today;
-        document.getElementById('incomeDate').value = today;
+        // Use local timezone to avoid date offset issues
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const localDate = `${year}-${month}-${day}`;
+        
+        document.getElementById('expenseDate').value = localDate;
+        document.getElementById('incomeDate').value = localDate;
     }
 
     populateCategoryDropdowns() {
@@ -370,9 +376,16 @@ class BudgetExpenseTracker {
     }
 
     quickAddBusFare() {
+        // Use local timezone for correct date
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const localDate = `${year}-${month}-${day}`;
+        
         const busFare = {
             id: Date.now(),
-            date: new Date().toISOString().split('T')[0],
+            date: localDate,
             amount: 2.50,
             description: 'Bus Fare',
             category: 'Transportation',
@@ -832,8 +845,10 @@ class BudgetExpenseTracker {
         const categoryTotals = {};
         let totalExpenses = 0;
 
+        // Normalize categories by removing emojis before grouping
         this.expenses.forEach(exp => {
-            categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
+            const normalizedCategory = this.getCategoryWithoutEmoji(exp.category);
+            categoryTotals[normalizedCategory] = (categoryTotals[normalizedCategory] || 0) + exp.amount;
             totalExpenses += exp.amount;
         });
 
