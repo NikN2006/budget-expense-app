@@ -1378,7 +1378,6 @@ Respond with ONLY the category name, nothing else. Choose the single most approp
             statusDiv.style.color = 'white';
         }
     }
-    }
 }
 
 // Initialize the app
